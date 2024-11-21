@@ -1,6 +1,7 @@
 package com.restapi.CRUDify.service;
 
 import com.restapi.CRUDify.entity.Product;
+import com.restapi.CRUDify.exceptionhandler.ProductNotFoundException;
 import com.restapi.CRUDify.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<Product> fetchAllProducts() {
-		List<Product> allProducts = productRepository.findAll();
-		return allProducts;
+		return productRepository.findAll();
 	}
 
 	@Override
@@ -31,8 +31,8 @@ public class ProductServiceImpl implements ProductService {
 		Optional<Product> product = productRepository.findById(id);
 		if (product.isPresent()) {
 			return product.get();
-		}
-		return null;
+		} else 
+			throw new ProductNotFoundException("Product not found with ID: " + id);
 	}
 
 	@Override
@@ -58,7 +58,8 @@ public class ProductServiceImpl implements ProductService {
 		if (productRepository.findById(id).isPresent()) {
 			productRepository.deleteById(id);
 			return "Product deleted successfully";
-		}
-		return "No such product in the database";
+		} else {
+	        throw new ProductNotFoundException("Product not found with ID: " + id);
+	    }
 	}
 }
