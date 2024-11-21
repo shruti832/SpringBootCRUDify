@@ -1,9 +1,11 @@
 package com.restapi.CRUDify.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import javax.validation.constraints.*;
 
 @Entity
 public class Product {
@@ -12,10 +14,14 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long productId;
 
+	@Column(nullable = false)
+	@Size(min = 3, max = 100)
 	private String productName;
 
+	@DecimalMin(value = "0.0", message = "Price must be a positive value")
 	private float productPrice;
 
+	@Size(max = 200)
 	private String productDescription;
 
 	public Product() {
