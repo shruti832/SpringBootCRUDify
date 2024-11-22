@@ -5,6 +5,7 @@ import com.restapi.CRUDify.service.ProductService;
 import com.restapi.CRUDify.exceptionhandler.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -35,23 +36,18 @@ public class ProductController {
 	@PostMapping("/products")
 	@Operation(summary = "Save a new product", description = "Create a new product and save it in the database")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "201", description = "Product created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class), examples = @ExampleObject(value = """
-					{
-					    "productId": 123,
-					    "productName": "Example Product",
-					    "productPrice": 99.99,
-					    "productDescription": "This is a sample product."
-					}
-					"""))),
-			@ApiResponse(responseCode = "400", description = "Invalid product details", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
-					{
-					    "message": "Invalid product details",
-					    "statusCode": 400,
-					    "error": "Bad Request"
-					}
-					"""))) })
-	public Product saveProduct(@RequestBody @Validated Product product) {
-		return productService.saveProduct(product);
+		    @ApiResponse(responseCode = "201", description = "Product created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))),
+		    @ApiResponse(responseCode = "400", description = "Invalid product details", content = @Content(mediaType = "application/json"))
+		})
+	public Product saveProduct(@RequestBody @Validated Product product, HttpServletResponse response) {
+		Product savedProduct = productService.saveProduct(product);
+
+		if (savedProduct != null) {
+			response.setStatus(HttpServletResponse.SC_CREATED); // Set 201 only on success
+		} else {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // Set 400 if the product creation fails
+		}
+		return savedProduct;
 	}
 
 	/**

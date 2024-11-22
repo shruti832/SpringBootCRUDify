@@ -164,4 +164,9 @@ curl -X GET http://localhost:8080/products
      server.port=8085
      ```
 
+## Demo Video
+
+Click [here](https://drive.google.com/file/d/1k5f_3dXnqdvtYejnTtXDhaKpiLmeuzMH/view?usp=sharing) to watch the demo video.
+
+
 ---
